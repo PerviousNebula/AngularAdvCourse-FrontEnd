@@ -1,0 +1,51 @@
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">User's personal information</h4>
+                <h6 class="card-subtitle">Edit and update</h6>
+                <form name="profile" (ngSubmit)="update()" class="form p-t-20">
+                    <div [formGroup]="profile">
+                        <div class="form-group">
+                            <label for="exampleInputuname">Name</label>
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="ti-user"></i></div>
+                                <input formControlName="name" type="text" class="form-control" placeholder="Username" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Email address</label>
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="ti-email"></i></div>
+                                <input formControlName="email" type="email" class="form-control" placeholder="Email address">
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success waves-effect waves-light m-r-10" 
+                            [disabled]="profile.invalid">
+                        <span *ngIf="!isLoading"><i class="fa fa-save"></i> Update</span>
+                        <span *ngIf="isLoading"><i class="fa fa-spin fa-spinner">Updating...</i></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Profile picture</h4>
+                <h6 class="card-subtitle">Update your profile picture</h6>
+                <div class="row">
+                    <img *ngIf="!imgTemporal" [src]="userInfo.img | image" style="width: 150px;" />
+                    <img *ngIf="imgTemporal" [src]="imgTemporal" style="width: 150px;" /> 
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <input (change)="selectImg($event.target.files[0])" type="file" style="margin-bottom:20px;"/>
+                </div>
+                <button (click)="updateImage()" [disabled]="!imageUploaded" type="button" class="btn btn-block btn-success waves-effect waves-light m-r-10">
+                    <span *ngIf="!isLoading"><i class="fa fa-save"></i> Update picture</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

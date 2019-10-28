@@ -9,6 +9,7 @@ import { ProgressComponent } from './progress/progress.component';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
+import { ProfileComponent } from './profile/profile.component';
 // import { NopagefoundComponent } from '../shared/nopagefound/nopagefound.component';
 
 // Guards
@@ -26,6 +27,7 @@ const ROUTES:Routes = [
             { path: 'account-settings', component: AccountSettingsComponent, data:{title:"Theme Settings", desc:"Customizables app theme colors"} },
             { path: 'promesas', component: PromesasComponent, data:{title:"Promises", desc:"Async managment with promises"} },
             { path: 'rxjs', component: RxjsComponent, data:{title:"RxJS", desc:"Async managment with observables from RxJS library"} },
+            { path: 'profile', component: ProfileComponent, data:{title:"My profile", desc:"User's personal information and profile picture"} },
             { path: '', redirectTo: '/dashboard', pathMatch: 'full' }/*,
             { path: '**', component: NopagefoundComponent }*/
         ]
