@@ -12,6 +12,7 @@ import {
   LoginGuard,
   UploadFileService
 } from './service.index';
+import { ModalUploadService } from '../components/modal-upload/modal-upload.service';
 
 @NgModule({
   declarations: [],
@@ -26,7 +27,8 @@ import {
     SidebarService,
     UserService,
     LoginGuard,
-    UploadFileService
+    UploadFileService,
+    ModalUploadService
   ]
 })
 export class ServiceModule { }

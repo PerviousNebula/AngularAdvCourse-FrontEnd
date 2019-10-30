@@ -1,0 +1,26 @@
+<div id="responsive-modal" class="modal modal-overlay fade show" tabindex="-1" role="dialog" 
+     aria-labelledby="myModalLabel" style="display: block;" *ngIf="!_modal.hidden">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Upload an image</h4>
+                <button type="button" class="close" aria-hidden="true" (click)="closeModal()">×</button>
+            </div>
+            <div class="modal-body text-center">
+                <h4 class="card-title">Profile picture</h4>
+                <h6 class="card-subtitle">Update your profile picture</h6>
+                <div class="row">
+                    <img *ngIf="!imgTemporal" [src]="'noimage' | image" style="width: 150px;" class="center-img img-circle" />
+                    <img *ngIf="imgTemporal" [src]="imgTemporal" class="center-img img-circle" /> 
+                </div>
+                <div class="row" style="margin-top:10px;">
+                    <input class="form-control" (change)="selectImg($event.target.files[0])" type="file" style="margin-bottom:20px;"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default waves-effect" (click)="closeModal()">Close</button>
+                <button type="button" class="btn btn-primary waves-effect waves-light" (click)="uploadImg()">Upload</button>
+            </div>
+        </div>
+    </div>
+</div>

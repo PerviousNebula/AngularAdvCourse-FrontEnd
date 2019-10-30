@@ -20,13 +20,17 @@ export class UserService {
   public HTTP_LOGIN_URL:string;
   public user:User;
   public token:string;
+  public fromPagination:number;
+  public totalUsers:number;
 
   constructor(private http:HttpClient, 
               private router:Router, 
-              private _uploadFile:UploadFileService) 
+              private _uploadFile:UploadFileService)
   { 
     this.HTTP_USER_URL = `${URL_BASE}/user`;
     this.HTTP_LOGIN_URL = `${URL_BASE}/login`;
+    this.fromPagination = 0;
+    this.totalUsers = 0;
     this.loadFromLocalStorage();
   }
 
@@ -47,6 +51,14 @@ export class UserService {
     const URL = `${this.HTTP_LOGIN_URL}/google`;
     return this.http.post(URL, { token }).pipe(map((resp:any) => {
       this.saveInLocalStorage(resp.id,resp.token,resp.user);
+      return true;
+    }));
+  }
+
+  public facebookSignIn(access_token:string):Observable<Object> {
+    const URL = `${this.HTTP_LOGIN_URL}/facebook`;
+    return this.http.post(URL, { access_token }).pipe(map((resp:any) => {
+      this.saveInLocalStorage(resp.Id, resp.token, resp.user);
       return true;
     }));
   }
@@ -80,16 +92,45 @@ export class UserService {
     }));
   }
 
+  public filterUsers(hint:string):Observable<Object> {    
+    const URL = `${URL_BASE}/search/collection/users/${hint}`;
+    return this.http.get(URL).pipe(map((resp:any) => {
+      this.totalUsers = resp.total;
+      return resp;
+    }));
+  }
+
   public updateUser(user:User):Observable<Object> {
     const URL = `${this.HTTP_USER_URL}/${user._id}?token=${this.token}`;
     return this.http.put(URL, user).pipe(map(() => {
-      this.saveInLocalStorage(user._id,this.token,user);
+      if(user._id === this.user._id)
+        this.saveInLocalStorage(user._id,this.token,user);      
       Swal.fire({
         title: "Success",
         type: "success",
         text: "The user has been updated successfully!"
       });
       return true;
+    }));
+  }
+
+  public deleteUser(id:string):Observable<Object> {    
+    return this.http.delete(`${this.HTTP_USER_URL}/${id}?token=${this.token}`).pipe(map((resp:any) => {
+      Swal.fire({
+        title: "Success",
+        type: "success",
+        text: "The user has been removed successfully!"
+      });
+      this.fromPagination = 0;
+      return resp;
+    }));
+  }
+
+  public getAllUsers():Observable<Object> {
+    const URL = `${this.HTTP_USER_URL}?from=${this.fromPagination}`;
+    return this.http.get(URL).pipe(map((resp:any) => {
+      this.totalUsers = resp.total;
+      return resp;
     }));
   }
 

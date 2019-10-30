@@ -14,6 +14,7 @@ import { ProfileComponent } from './profile/profile.component';
 
 // Guards
 import { LoginGuard } from '../services/guards/login.guard';
+import { UsersComponent } from './users/users.component';
 
 const ROUTES:Routes = [
     { 
@@ -28,6 +29,7 @@ const ROUTES:Routes = [
             { path: 'promesas', component: PromesasComponent, data:{title:"Promises", desc:"Async managment with promises"} },
             { path: 'rxjs', component: RxjsComponent, data:{title:"RxJS", desc:"Async managment with observables from RxJS library"} },
             { path: 'profile', component: ProfileComponent, data:{title:"My profile", desc:"User's personal information and profile picture"} },
+            { path: 'users', component: UsersComponent, data:{title:"Users Managment", desc:"Search, filter, remove and edit current system's users"} },
             { path: '', redirectTo: '/dashboard', pathMatch: 'full' }/*,
             { path: '**', component: NopagefoundComponent }*/
         ]
