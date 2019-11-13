@@ -22,6 +22,8 @@ export class UserService {
   public token:string;
   public fromPagination:number;
   public totalUsers:number;
+  public fromPaginationFilter:number;
+  public totalUsersFilter:number;
 
   constructor(private http:HttpClient, 
               private router:Router, 
@@ -31,6 +33,8 @@ export class UserService {
     this.HTTP_LOGIN_URL = `${URL_BASE}/login`;
     this.fromPagination = 0;
     this.totalUsers = 0;
+    this.fromPaginationFilter = 0;
+    this.totalUsersFilter = 0;
     this.loadFromLocalStorage();
   }
 
@@ -93,10 +97,10 @@ export class UserService {
   }
 
   public filterUsers(hint:string):Observable<Object> {    
-    const URL = `${URL_BASE}/search/collection/users/${hint}`;
+    const URL = `${URL_BASE}/search/collection/users/${hint}?from=${this.fromPaginationFilter}`;
     return this.http.get(URL).pipe(map((resp:any) => {
-      this.totalUsers = resp.total;
-      return resp;
+      this.totalUsersFilter = resp.total;
+      return resp.users;
     }));
   }
 
@@ -130,7 +134,7 @@ export class UserService {
     const URL = `${this.HTTP_USER_URL}?from=${this.fromPagination}`;
     return this.http.get(URL).pipe(map((resp:any) => {
       this.totalUsers = resp.total;
-      return resp;
+      return resp.users;
     }));
   }
 

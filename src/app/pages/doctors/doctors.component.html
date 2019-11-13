@@ -1,0 +1,134 @@
+<div class="row animated fadeIn">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Doctors</h4>
+                <h6 class="card-subtitle">Search and manage system's doctors</h6>
+                <form name="hospitalForm" (ngSubmit)="filterDoctors()" class="form-horizontal p-t-20">
+                    <div [formGroup]="doctorFilter" class="form-group row">
+                        <div class="col-sm-12">
+                            <div class="input-group">
+                                <div class="input-group-addon"><i class="ti-user"></i></div>
+                                <input formControlName="name" type="text" class="form-control" placeholder="Name" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row m-b-0">
+                        <div class="offset-sm-3 col-sm-12 text-right">
+                            <button type="button" class="btn btn-danger waves-effect waves-light mr-1" (click)="resetAll()">
+                                Reset All
+                            </button>
+                            <button type="submit" class="btn btn-success waves-effect waves-light">
+                                Search
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row animated fadeIn">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-title mb-0">
+                <a class="btn btn-rounded btn-primary pull-right mt-3 mr-3" [routerLink]="['/doctor', 'new']">
+                    <i class="fa fa-plus"></i>
+                    Create doctor
+                </a>
+            </div>
+            <div class="card-body">
+                <table class="tablesaw table-striped table-hover table-bordered table tablesaw-columntoggle" 
+                        *ngIf="doctorsObs | async as doctors; else loading">
+                    <thead>
+                        <tr>
+                            <th>Picture</th>
+                            <th>Name</th>
+                            <th>Hospital</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngIf="doctors.length; else noResults">
+                            <tr *ngFor="let doctor of doctors">
+                                <td>
+                                    <img class="img-circle" [src]="doctor.img | image:'doctors'" style="width:60px;cursor: pointer;" alt="profile-picture"
+                                        (click)="this._modal.showModal('doctors', doctor._id)" />
+                                </td>
+                                <td>{{ doctor.name }}</td>
+                                <td>{{ doctor.hospital.name }}</td>
+                                <td class="text-center">
+                                    <a class="btn btn-sm btn-primary mr-1" [routerLink]="['/doctor', doctor._id]">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <button class="btn btn-sm btn-danger" (click)="deleteDoctor(doctor)">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </ng-container>
+                        <ng-template #noResults>
+                            <h5 class="font-weight-bold ml-2">There's not records to show...</h5>
+                        </ng-template>
+                    </tbody>
+                </table>
+                <div class="row" *ngIf="!filtering">
+                    <div class="col-6">
+                        <div class="dataTables_info" id="example_info" role="status" aria-live="polite">
+                            Showing {{ _doctors.fromPagination + 1 }} to {{ _doctors.fromPagination + 5 }} of {{ _doctors.totalDoctorsPagination }} entries
+                        </div>
+                    </div>
+                    <div class="col-6 text-right">
+                        <button class="btn btn-secondary btn-sm mr-1" [disabled]="!_doctors.fromPagination" (click)="goToLimit(0)">
+                            <i class="fa fa-angle-double-left"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm mr-3" (click)="loadPage(-5)" [disabled]="!_doctors.fromPagination">
+                            <i class="fa fa-angle-left"></i>
+                        </button>
+                        <span class="mr-3">{{ _doctors.fromPagination / 5 + 1 }}</span>
+                        <button class="btn btn-secondary btn-sm mr-1" (click)="loadPage(5)" [disabled]="_doctors.fromPagination + 5 >= _doctors.totalDoctorsPagination">
+                            <i class="fa fa-angle-right"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" [disabled]="_doctors.fromPagination + 5 >= _doctors.totalDoctorsPagination" (click)="goToLimit(1)">
+                            <i class="fa fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="row" *ngIf="filtering">
+                    <div class="col-6">
+                        <div class="dataTables_info" id="example_info" role="status" aria-live="polite">
+                            Showing {{ _doctors.fromPaginationFilter + 1 }} to {{ _doctors.fromPaginationFilter + 5 }} of {{ _doctors.totalDoctorsPaginationFilter }} entries
+                        </div>
+                    </div>
+                    <div class="col-6 text-right">
+                        <button class="btn btn-secondary btn-sm mr-1" [disabled]="!_doctors.fromPaginationFilter" (click)="goToLimitFilter(0)">
+                            <i class="fa fa-angle-double-left"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm mr-3" (click)="loadPageFilter(-5)" [disabled]="!_doctors.fromPaginationFilter">
+                            <i class="fa fa-angle-left"></i>
+                        </button>
+                        <span class="mr-3">{{ _doctors.fromPaginationFilter / 5 + 1 }}</span>
+                        <button class="btn btn-secondary btn-sm mr-1" (click)="loadPageFilter(5)" [disabled]="_doctors.fromPaginationFilter + 5 >= _doctors.totalDoctorsPaginationFilter">
+                            <i class="fa fa-angle-right"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" [disabled]="_doctors.fromPaginationFilter + 5 >= _doctors.totalDoctorsPaginationFilter" (click)="goToLimitFilter(1)">
+                            <i class="fa fa-angle-double-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #loading>
+        <div class="card">
+            <div class="card-body">
+                <div class="col-12 text-center">
+                    <i class="fa fa-spinner fa-spin fa-4x"></i>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</div>
+
+<app-modal-upload></app-modal-upload>

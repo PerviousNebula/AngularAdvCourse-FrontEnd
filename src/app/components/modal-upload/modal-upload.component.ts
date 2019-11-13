@@ -1,4 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core'
+import { AutoUnsubscribe } from "ngx-auto-unsubscribe";;
 // Services
 import { UploadFileService } from 'src/app/services/service.index';
 import { ModalUploadService } from './modal-upload.service';
@@ -6,6 +7,7 @@ import { ModalUploadService } from './modal-upload.service';
 import Swal from 'sweetalert2';
 import { Subscription } from 'rxjs';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-modal-upload',
   templateUrl: './modal-upload.component.html'
@@ -21,9 +23,7 @@ export class ModalUploadComponent implements OnInit, OnDestroy {
   ngOnInit() {
   }
 
-  ngOnDestroy(): void {
-    this.modalObs.unsubscribe();    
-  }
+  ngOnDestroy(): void {}
 
   public uploadImg():void { 
     this.modalObs = this._upload.uploadFile(this.imageUploaded, this._modal.userType, this._modal.id)
