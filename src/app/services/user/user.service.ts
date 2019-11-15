@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 import Swal from 'sweetalert2'
 
 // Models
@@ -8,9 +8,10 @@ import { User } from 'src/app/models/user.model';
 
 // URL BASE SERVER
 import { URL_BASE } from 'src/config/config';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
 import { UploadFileService } from '../upload/upload-file.service';
+import { SidebarService } from '../shared/sidebar.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,8 @@ export class UserService {
 
   constructor(private http:HttpClient, 
               private router:Router, 
-              private _uploadFile:UploadFileService)
+              private _uploadFile:UploadFileService,
+              private _sidebar:SidebarService)
   { 
     this.HTTP_USER_URL = `${URL_BASE}/user`;
     this.HTTP_LOGIN_URL = `${URL_BASE}/login`;
@@ -55,6 +57,7 @@ export class UserService {
     const URL = `${this.HTTP_LOGIN_URL}/google`;
     return this.http.post(URL, { token }).pipe(map((resp:any) => {
       this.saveInLocalStorage(resp.id,resp.token,resp.user);
+      this._sidebar.menu = resp.categories;
       return true;
     }));
   }
@@ -72,10 +75,21 @@ export class UserService {
       localStorage.setItem("email",user.email);
     else
       localStorage.removeItem("email");
-    return this.http.post(this.HTTP_LOGIN_URL, user).pipe(map((resp:any) => {
-      this.saveInLocalStorage(resp.id,resp.token,resp.user);
-      return true;
-    }));
+    return this.http.post(this.HTTP_LOGIN_URL, user)
+                    .pipe(
+                      map((resp:any) => {
+                        this.saveInLocalStorage(resp.id,resp.token,resp.user);
+                        this._sidebar.menu = resp.categories;
+                        return true;
+                      }),
+                      catchError(err => {
+                        Swal.fire({
+                          title:"Invalid login",
+                          type:"error",
+                          text:err.error.message
+                        });
+                        return throwError(err);
+                      }));
   }
 
   public logOutUser():void {
@@ -86,14 +100,24 @@ export class UserService {
   }
 
   public createUser(user:User):Observable<Object> {
-    return this.http.post(this.HTTP_USER_URL, user).pipe(map((res:any) => {
-      Swal.fire({
-        title: "Success!",
-        text: `The user ${user.email} was created successfully`,
-        type: "success"
-      });
-      return res.userSaved;
-    }));
+    return this.http.post(this.HTTP_USER_URL, user)
+                    .pipe(
+                      map((res:any) => {
+                        Swal.fire({
+                          title: "Success!",
+                          text: `The user ${user.email} was created successfully`,
+                          type: "success"
+                        });
+                        return res.userSaved;
+                      }),
+                      catchError(err => {
+                        Swal.fire({
+                          title:err.error.message,
+                          type:"error",
+                          text:err.error.errors.message
+                        });
+                        return throwError(err);
+                      }));
   }
 
   public filterUsers(hint:string):Observable<Object> {    

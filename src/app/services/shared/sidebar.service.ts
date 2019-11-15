@@ -10,27 +10,27 @@ export class SidebarService {
   menu:Array<Category>;
 
   constructor() { 
-    this.menu = [
-      {
-        title: "Principal",
-        icon: "mdi mdi-gauge",
-        subcategories: [
-          { title: "Dashboard", url: "/dashboard" },
-          { title: "ProgressBar", url: "/progreso" },
-          { title: "Charts", url: "/graficas1" },
-          { title: "Promesas", url: "/promesas" },
-          { title: "RxJS", url: "/rxjs" }
-        ]
-      },
-      {
-        title: "Maintenance",
-        icon: "mdi mdi-folder-lock",
-        subcategories: [
-          { title: "Users", url: "/users"},
-          { title: "Doctors", url: "/doctors"},
-          { title: "Hospitals", url: "/hospitals"}
-        ]
-      }
-    ];
+    // this.menu = [
+    //   {
+    //     title: "Principal",
+    //     icon: "mdi mdi-gauge",
+    //     subcategories: [
+    //       { title: "Dashboard", url: "/dashboard" },
+    //       { title: "ProgressBar", url: "/progreso" },
+    //       { title: "Charts", url: "/graficas1" },
+    //       { title: "Promesas", url: "/promesas" },
+    //       { title: "RxJS", url: "/rxjs" }
+    //     ]
+    //   },
+    //   {
+    //     title: "Maintenance",
+    //     icon: "mdi mdi-folder-lock",
+    //     subcategories: [
+    //       { title: "Users", url: "/users"},
+    //       { title: "Doctors", url: "/doctors"},
+    //       { title: "Hospitals", url: "/hospitals"}
+    //     ]
+    //   }
+    // ];
   }
 }
