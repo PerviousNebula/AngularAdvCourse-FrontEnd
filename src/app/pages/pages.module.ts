@@ -12,7 +12,6 @@ import { PipesModule } from '../pipes/pipes.module';
 import { PAGES_ROUTES } from './pages.routes';
 
 //Components
-import { PagesComponent } from './pages.component';
 import { DashboardComponent } from '../pages/dashboard/dashboard.component';
 import { ProgressComponent } from '../pages/progress/progress.component';
 import { Graficas1Component } from '../pages/graficas1/graficas1.component';
@@ -23,7 +22,6 @@ import { PromesasComponent } from './promesas/promesas.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { ProfileComponent } from './profile/profile.component';
 import { UsersComponent } from './users/users.component';
-import { ModalUploadComponent } from '../components/modal-upload/modal-upload.component';
 import { HospitalsComponent } from './hospitals/hospitals.component';
 import { DoctorsComponent } from './doctors/doctors.component';
 import { DoctorComponent } from './doctor/doctor.component';
@@ -31,7 +29,6 @@ import { SearchComponent } from './search/search.component';
 
 @NgModule({
     declarations: [
-        PagesComponent,
         DashboardComponent,
         ProgressComponent,
         Graficas1Component,
@@ -42,13 +39,12 @@ import { SearchComponent } from './search/search.component';
         RxjsComponent,
         ProfileComponent,
         UsersComponent,
-        ModalUploadComponent,
         HospitalsComponent,
         DoctorsComponent,
         DoctorComponent,
         SearchComponent
     ],
-    imports: [
+    imports: [        
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
@@ -58,7 +54,6 @@ import { SearchComponent } from './search/search.component';
         PipesModule
     ],
     exports: [
-        PagesComponent,
         DashboardComponent,
         ProgressComponent,
         Graficas1Component

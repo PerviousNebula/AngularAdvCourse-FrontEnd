@@ -5,6 +5,7 @@ import Swal from 'sweetalert2'
 
 // Models
 import { User } from 'src/app/models/user.model';
+import { Category } from 'src/app/interfaces/shared/category';
 
 // URL BASE SERVER
 import { URL_BASE } from 'src/config/config';
@@ -40,10 +41,12 @@ export class UserService {
     this.loadFromLocalStorage();
   }
 
-  public saveInLocalStorage(id:string, token:string, user:User):void {
+  public saveInLocalStorage(id:string, token:string, user:User, menu?:Category):void {
     localStorage.setItem("id", id);
     localStorage.setItem("token", token);
     localStorage.setItem("user", JSON.stringify(user));
+    if(menu)
+      localStorage.setItem("menu", JSON.stringify(menu));
     this.user = user;
     this.token = token;
   }
@@ -51,24 +54,25 @@ export class UserService {
   public loadFromLocalStorage():void {
     this.user = JSON.parse(localStorage.getItem("user")) || null;
     this.token = localStorage.getItem("token") || "";
+    this._sidebar.menu = JSON.parse(localStorage.getItem("menu"));
   }
 
   public googleSignIn(token:string):Observable<Object> {
     const URL = `${this.HTTP_LOGIN_URL}/google`;
     return this.http.post(URL, { token }).pipe(map((resp:any) => {
-      this.saveInLocalStorage(resp.id,resp.token,resp.user);
+      this.saveInLocalStorage(resp.id,resp.token,resp.user,resp.categories);
       this._sidebar.menu = resp.categories;
       return true;
     }));
   }
 
-  public facebookSignIn(access_token:string):Observable<Object> {
-    const URL = `${this.HTTP_LOGIN_URL}/facebook`;
-    return this.http.post(URL, { access_token }).pipe(map((resp:any) => {
-      this.saveInLocalStorage(resp.Id, resp.token, resp.user);
-      return true;
-    }));
-  }
+  // public facebookSignIn(access_token:string):Observable<Object> {
+  //   const URL = `${this.HTTP_LOGIN_URL}/facebook`;
+  //   return this.http.post(URL, { access_token }).pipe(map((resp:any) => {
+  //     this.saveInLocalStorage(resp.Id, resp.token, resp.user);
+  //     return true;
+  //   }));
+  // }
 
   public logInUser(user:User, rememberMe:Boolean):Observable<Object> {
     if(rememberMe)
@@ -78,7 +82,7 @@ export class UserService {
     return this.http.post(this.HTTP_LOGIN_URL, user)
                     .pipe(
                       map((resp:any) => {
-                        this.saveInLocalStorage(resp.id,resp.token,resp.user);
+                        this.saveInLocalStorage(resp.id,resp.token,resp.user,resp.categories);
                         this._sidebar.menu = resp.categories;
                         return true;
                       }),
@@ -97,6 +101,26 @@ export class UserService {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     this.router.navigate(['/login']);
+  }
+
+  public renewUserToken():Observable<Object> {
+    return this.http.get(`${URL_BASE}/login/renewtoken?token=${this.token}`)
+                    .pipe(
+                      map((resp:any) => {
+                        this.token = resp.token;
+                        localStorage.setItem("token",this.token);
+                        return true;
+                      }),
+                      catchError(err => {
+                        Swal.fire({
+                          title: "Your session has expire",
+                          type: "error",
+                          text: "Please login again to renew your session"
+                        });
+                        this.router.navigate(["/login"]);
+                        return throwError(err);
+                      })
+                    )
   }
 
   public createUser(user:User):Observable<Object> {

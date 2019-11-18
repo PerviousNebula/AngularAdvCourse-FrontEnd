@@ -11,6 +11,7 @@ import {
   UserService,
   LoginGuard,
   AdminGuard,
+  VerifyTokenGuard,
   UploadFileService,
   HospitalService,
   DoctorService
@@ -31,6 +32,7 @@ import { ModalUploadService } from '../components/modal-upload/modal-upload.serv
     UserService,
     LoginGuard,
     AdminGuard,
+    VerifyTokenGuard,
     UploadFileService,
     HospitalService,
     ModalUploadService,
